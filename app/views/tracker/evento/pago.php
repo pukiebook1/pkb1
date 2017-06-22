@@ -130,6 +130,16 @@ $hooks = Hooks::get();
 						<th>Centro de entrenamiento:</th>
 						<td><?php echo $data['pago']->centro_entrenamiento; ?></td>
 					</tr>
+					<tr>
+						<th>Comprobante de pago:</th>
+						<td>
+							<div class="folderImage">
+								<div class="no-gutter popup-gallery">
+									<a href="<?php echo DIR . $data['pago']->archivoFoto; ?>" class="portfolio-box">Ver imagen</a>
+								</div>
+							</div>
+						</td>
+					</tr>
                                         
 				</table>
 			<?php else: ?>
