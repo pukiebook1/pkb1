@@ -2305,11 +2305,35 @@ class Cuenta extends Controller
 				{
 					
 					$banco = filter_input(INPUT_POST, 'banco');	
-					$telefono 			= filter_input(INPUT_POST, 'telefono');
-					$address 			= filter_input(INPUT_POST, 'address');				
+					$telefono 	= filter_input(INPUT_POST, 'telefono');
+					$address = filter_input(INPUT_POST, 'address');
+
+					$imageFileType = pathinfo($_FILES['archivoFoto']['name'],PATHINFO_EXTENSION);
+
+					$archivoFoto = PAGOPICTUREPATH . $persona->idPersona . '.' . $imageFileType;
+
+					//echo '<pre>';
+					if (move_uploaded_file($_FILES['archivoFoto']['tmp_name'], $archivoFoto)) {
+    					$resizer = new ResizeImage($archivoFoto);
+	    				$resizer->resizeTo(400, 400, 'maxHeight');
+	    				$resizer->cropTo(400,400);
+	    				$resizer->saveImage($archivoFoto);
+					} else {
+    					echo "¡Posible ataque de subida de ficheros!\n";
+    					$gumpValidator = new Gump();
+    					$validator['archivoFoto'] = 'required';
+    					$is_valid = $gumpValidator->validate($_POST, $validator);
+					}
+
+					//echo 'Más información de depuración:';
+					//print_r(var_dump($_FILES));
+
+					//print "</pre>";
 					
 					$valores['banco'] = $banco;
 					$valores['numcuenta'] = $numcuenta;
+					$valores['archivoFoto'] = $archivoFoto;
+
 					$info['data'] = $valores;
 
 					$gumpValidator = new Gump();
@@ -2317,9 +2341,9 @@ class Cuenta extends Controller
 					$validator['numreferencia'] = 'required';
 					$validator['address'] = 'required';
 					$validator['telefono'] = 'required';
+
+					//print_r($valores);
 					
-
-
 					$is_valid = $gumpValidator->validate($_POST, $validator);
 
 					if($is_valid !== true)
@@ -2397,7 +2421,8 @@ class Cuenta extends Controller
 					$send['observacion'] 	= $observacion;
 					$send['address'] 		= $address;
 					$send['telefono'] 		= $telefono;
-					$send['edad'] 			= $edad;	
+					$send['edad'] 			= $edad;
+					$send['archivoFoto'] 	= $archivoFoto;	
 					$send['centro_entrenamiento'] 			= $centro_entrenamiento;										
 						
 
